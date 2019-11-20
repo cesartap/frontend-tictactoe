@@ -10,6 +10,11 @@ export class AppComponent {
   @Input() playerOne;
   @Input() playerTwo;
   @Input() condiciones: CondicionesModel[];
+
+  // resultado
+  winsP1 = 0;
+  winsP2 = 0;
+
   formShow = true;
   showFirstStage = false;
   constructor() {
@@ -36,6 +41,13 @@ export class AppComponent {
   onSubmit() {
     this.formShow = false;
     this.showFirstStage = true;
+  }
+
+  getResultP1(winsP1: number): void {
+   this.winsP1 = winsP1;
+  }
+  getResultP2(winsP2: number): void {
+    this.winsP2 = winsP2;
   }
 
 }

@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output } from '@angular/core';
 import { CondicionesModel } from '../models/conditions.model';
+import { EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-home-page',
@@ -13,6 +14,10 @@ export class HomePageComponent implements OnInit {
   condicionesP1;
   condicionesP2;
   resultado;
+  winsP1 = 0;
+  winsP2 = 0;
+  @Output() notifyP1: EventEmitter<number> = new EventEmitter<number>();
+  @Output() notifyP2: EventEmitter<number> = new EventEmitter<number>();
   // ronda
   round = 1;
 
@@ -54,7 +59,7 @@ export class HomePageComponent implements OnInit {
 
     // se avanza a la siguiente ronda
 
-    if (this.round === 4) {
+    if (this.winsP1 === 3 || this.winsP2 === 3) {
       this.playing = false;
       this.condicionesP1 = this.condiciones;
       this.condicionesP2 = this.condiciones;
@@ -71,19 +76,23 @@ export class HomePageComponent implements OnInit {
     // se obtiene el elemento que elimina
     this.condicionesP1.forEach(element => {
       if (this.p1Seleccion === element.move) {
-
-        // si el elemento mata a la seleccion del p2
-        if (element.kills === this.p2Seleccion) {
+        if (this.p1Seleccion === this.p2Seleccion) {
+          resultado = 'NO WINNER, TIE!!';
+        } else if
+          // si el elemento mata a la seleccion del p2
+          (element.kills === this.p2Seleccion) {
           resultado = 'PLAYER 1 ( ' + this.playerOne + ') WINS!';
+          this.winsP1++;
+          this.notifyP1.emit(this.winsP1);
         } else {
           resultado = 'PLAYER 2 ( ' + this.playerTwo + ') WINS!';
+          this.winsP2++;
+          this.notifyP2.emit(this.winsP2);
         }
       }
     });
 
-    if (this.p1Seleccion === this.p2Seleccion) {
-      resultado = 'NO WINNER, TIE!!';
-    }
+
 
     // se agrega al score final
     this.score.push({ id: this.round, value: resultado });
@@ -103,6 +112,10 @@ export class HomePageComponent implements OnInit {
     this.p1Seleccion = '';
     this.p2Seleccion = '';
     this.round = 1;
+    this.winsP1 = 0;
+    this.winsP2 = 0;
+    this.notifyP1.emit(this.winsP1);
+    this.notifyP2.emit(this.winsP2);
   }
 }
 
