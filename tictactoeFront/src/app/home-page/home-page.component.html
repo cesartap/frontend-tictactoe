@@ -1,4 +1,4 @@
-<p *ngIf="!playing">{{resultado}}</p>
+<p *ngIf="playing">{{resultado}}</p>
 <div *ngIf="playing">
     <h2>ROUND {{round}}!</h2>
     <div>
@@ -45,4 +45,6 @@
     <li *ngFor="let hero of score">
         <span class="badge">{{hero.id}}</span> {{hero.value}}
     </li>
+    <button type="button" 
+                (click)="again()" class="btn">Again!</button>
 </div>

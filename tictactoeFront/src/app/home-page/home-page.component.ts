@@ -90,6 +90,20 @@ export class HomePageComponent implements OnInit {
     return resultado;
   }
 
+  /**
+   * Metodo que reinicia la partida
+   */
+  Again() {
+    this.resultado = '';
+    this.score = [];
+    this.condicionesP1 = this.condiciones;
+    this.condicionesP2 = this.condiciones;
+    this.playing = true;
+    this.p1Playing = true;
+    this.p1Seleccion = '';
+    this.p2Seleccion = '';
+    this.round = 1;
+  }
 }
 
 
