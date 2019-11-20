@@ -1,1 +1,48 @@
-<p>home-page works!</p>
+<p *ngIf="!playing">{{resultado}}</p>
+<div *ngIf="playing">
+    <h2>ROUND {{round}}!</h2>
+    <div>
+        <div *ngIf=p1Playing>
+            <img width="40px" alt="PlayerOne Logo" src="../../assets/p1.png" />
+            <label>Player {{playerOne}}
+            </label>
+            <p>Select a move:</p>
+            <div>
+                <select [(ngModel)]="p1Seleccion">
+                    <option *ngFor="let condicion of condicionesP1" [value]=condicion.move>
+                        {{condicion.move}}
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div *ngIf=!p1Playing>
+
+            <img width="40px" alt="PlayerTwo Logo" src="../../assets/p2.png" />
+            <label>Player {{playerTwo}}
+            </label>
+            <p>Select a move:</p>
+            <div>
+                <select [(ngModel)]="p2Seleccion">
+                    <option *ngFor="let condicion2 of condicionesP2" [value]=condicion2.move>
+                        {{condicion2.move}}
+                    </option>
+                </select>
+            </div>
+        </div>
+        <br>
+        <div>
+            <button type="button" [disabled]="(!p1Playing && p2Seleccion === '') || (p1Playing && p1Seleccion === '')"
+                (click)="toNextRound()" class="btn">Ok</button>
+        </div>
+    </div>
+    <br>
+</div>
+
+<div *ngIf="!playing">
+    <h2>SCORE</h2>
+    <br>
+    <li *ngFor="let hero of score">
+        <span class="badge">{{hero.id}}</span> {{hero.value}}
+    </li>
+</div>
