@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output } from '@angular/core';
 import { CondicionesModel } from '../models/conditions.model';
 import { EventEmitter } from '@angular/core';
+import { GamesService } from '../services/gamesService/games.service';
 
 @Component({
   selector: 'app-home-page',
@@ -31,7 +32,9 @@ export class HomePageComponent implements OnInit {
 
   // score
   score: any[] = [];
-  constructor() { }
+  playerScore = 0;
+  ganador: string;
+  constructor(public gamesService: GamesService) { }
 
   ngOnInit() {
     this.condicionesP1 = this.condiciones;
@@ -57,12 +60,35 @@ export class HomePageComponent implements OnInit {
       this.p2Seleccion = '';
     }
 
-    // se avanza a la siguiente ronda
+    // se termina el juego cuando algun jugador llega a la condicion
 
     if (this.winsP1 === 3 || this.winsP2 === 3) {
       this.playing = false;
       this.condicionesP1 = this.condiciones;
       this.condicionesP2 = this.condiciones;
+
+      // se llama al servicio para guardar al jugador y detectamos quien gano
+      
+      if (this.winsP1 === 3) {
+        this.ganador = this.playerOne;
+      } else {
+        this.ganador = this.playerTwo;
+      }
+
+      this.gamesService.addPlayerWins(this.ganador).subscribe((result) => {
+        console.log('Registro correcto');
+
+        // se obtiene los juegos ganados
+        this.gamesService.getPlayerGames(this.ganador).subscribe((data) => {
+          console.log(data);
+          if (data !== null) {
+            // se obtiene la informacion de los juegos del usuario
+            this.playerScore = data[0].gamesWon;
+          }
+        });
+      }, (err) => {
+        console.log(err);
+      });
     }
   }
 
@@ -81,11 +107,11 @@ export class HomePageComponent implements OnInit {
         } else if
           // si el elemento mata a la seleccion del p2
           (element.kills === this.p2Seleccion) {
-          resultado = 'PLAYER 1 ( ' + this.playerOne + ') WINS!';
+          resultado = 'PLAYER 1 ( ' + this.playerOne + ' ) WINS!';
           this.winsP1++;
           this.notifyP1.emit(this.winsP1);
         } else {
-          resultado = 'PLAYER 2 ( ' + this.playerTwo + ') WINS!';
+          resultado = 'PLAYER 2 ( ' + this.playerTwo + ' ) WINS!';
           this.winsP2++;
           this.notifyP2.emit(this.winsP2);
         }
@@ -116,6 +142,8 @@ export class HomePageComponent implements OnInit {
     this.winsP2 = 0;
     this.notifyP1.emit(this.winsP1);
     this.notifyP2.emit(this.winsP2);
+    this.playerScore = 0;
+    this.ganador = '';
   }
 }
 
